@@ -2,10 +2,12 @@ import { redirect } from 'next/navigation'
 import pool from '@/lib/db'
 import SetupForm from '@/components/SetupForm'
 import OrbitLogo from '@/components/OrbitLogo'
+import { isFjordHubManaged } from '@/lib/fjordhub'
 
 export const dynamic = 'force-dynamic'
 
 export default async function SetupPage() {
+  if (isFjordHubManaged()) redirect('/login')
   let userCount = 0
   let dbError = false
   try {

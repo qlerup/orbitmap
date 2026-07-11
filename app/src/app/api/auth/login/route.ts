@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 import { verifyPassword, runDummyVerify, createToken, COOKIE_NAME } from '@/lib/auth'
+import { authenticateWithFjordHub, ensureManagedLocalUser, isFjordHubManaged } from '@/lib/fjordhub'
 
 const MAX_ATTEMPTS = 5
 const LOCK_MINUTES = 15
@@ -13,6 +14,27 @@ export async function POST(req: NextRequest) {
 
     if (!username || !password) {
       return NextResponse.json({ error: 'Brugernavn og adgangskode er påkrævet' }, { status: 400 })
+    }
+
+    if (isFjordHubManaged()) {
+      const hubUser = await authenticateWithFjordHub(username, password)
+      if (!hubUser) {
+        return NextResponse.json(
+          { error: 'Forkert login eller ingen adgang til OrbitMap i FjordHub' },
+          { status: 401 }
+        )
+      }
+      const user = await ensureManagedLocalUser(hubUser)
+      const token = await createToken({ userId: user.id, username: user.username })
+      const response = NextResponse.json({ success: true, username: user.username })
+      response.cookies.set(COOKIE_NAME, token, {
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: req.nextUrl.protocol === 'https:',
+        maxAge: 8 * 60 * 60,
+        path: '/',
+      })
+      return response
     }
 
     const result = await pool.query(

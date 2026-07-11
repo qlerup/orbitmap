@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import pool from '@/lib/db'
 import { hashPassword } from '@/lib/auth'
+import { isFjordHubManaged } from '@/lib/fjordhub'
 
 export async function GET() {
+  if (isFjordHubManaged()) return NextResponse.json({ setupRequired: false, managedByFjordHub: true })
   try {
     const result = await pool.query('SELECT COUNT(*)::int AS count FROM users')
     return NextResponse.json({ setupRequired: result.rows[0].count === 0 })
@@ -12,6 +14,9 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
+  if (isFjordHubManaged()) {
+    return NextResponse.json({ error: 'Brugere administreres af FjordHub' }, { status: 403 })
+  }
   try {
     // Race-beskyttelse: setup kan kun køres når der ingen bruger findes
     const countResult = await pool.query('SELECT COUNT(*)::int AS count FROM users')

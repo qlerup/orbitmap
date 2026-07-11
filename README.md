@@ -116,6 +116,19 @@ http://YOUR_SERVER_IP:3005
 
 TLS should normally terminate at the reverse proxy.
 
+## FjordHub integration
+
+OrbitMap can be installed directly from FjordHub. A FjordHub-managed installation automatically receives its database and session secrets, registers the installing user as an OrbitMap administrator, and enables shared user access and single sign-on.
+
+When managed by FjordHub:
+
+- users and OrbitMap access are managed in FjordHub;
+- opening OrbitMap from FjordHub signs the user in with a short-lived SSO token;
+- direct login uses the same FjordHub username and password;
+- OrbitMap's standalone first-user setup is disabled.
+
+Standalone installations continue to use OrbitMap's built-in account setup and authentication.
+
 ## Local development
 
 Run PostgreSQL separately and provide `DATABASE_URL` and `JWT_SECRET` to the application environment. Then start the Next.js development server:
