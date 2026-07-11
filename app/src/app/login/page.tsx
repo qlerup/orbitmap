@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import pool from '@/lib/db'
 import { getSession } from '@/lib/auth'
+import { isFjordHubManaged } from '@/lib/fjordhub'
 import LoginForm from '@/components/LoginForm'
 import OrbitLogo from '@/components/OrbitLogo'
 
@@ -16,7 +17,9 @@ export default async function LoginPage() {
     userCount = null
   }
 
-  if (userCount === null || userCount === 0) redirect('/setup')
+  // I FjordHub-managed mode oprettes brugere ved første hub-login,
+  // så en tom users-tabel må ikke sende til /setup (giver redirect-loop)
+  if (!isFjordHubManaged() && (userCount === null || userCount === 0)) redirect('/setup')
 
   const session = await getSession()
   if (session) redirect('/dashboard')
