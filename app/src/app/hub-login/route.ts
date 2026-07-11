@@ -19,15 +19,21 @@ export async function GET(req: NextRequest) {
   const hubUser = await verifyFjordHubSsoToken(token)
   if (!hubUser) return NextResponse.redirect(redirectUrl(req, '/login?error=hub-login'))
 
-  const user = await ensureManagedLocalUser(hubUser)
-  const sessionToken = await createToken({ userId: user.id, username: user.username })
-  const response = NextResponse.redirect(redirectUrl(req, '/dashboard'))
-  response.cookies.set(COOKIE_NAME, sessionToken, {
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: req.nextUrl.protocol === 'https:',
-    maxAge: 8 * 60 * 60,
-    path: '/',
-  })
-  return response
+  try {
+    const user = await ensureManagedLocalUser(hubUser)
+    const sessionToken = await createToken({ userId: user.id, username: user.username })
+    const response = NextResponse.redirect(redirectUrl(req, '/dashboard'))
+    response.cookies.set(COOKIE_NAME, sessionToken, {
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: req.nextUrl.protocol === 'https:',
+      maxAge: 8 * 60 * 60,
+      path: '/',
+    })
+    return response
+  } catch (error) {
+    // Samme mønster som de andre Fjord-apps: log fejlen og send pænt til login
+    console.error('[hub-login] FjordHub SSO-login fejlede:', error)
+    return NextResponse.redirect(redirectUrl(req, '/login?error=hub-login'))
+  }
 }
