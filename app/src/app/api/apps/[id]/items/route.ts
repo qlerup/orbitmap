@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import pool from '@/lib/db'
 import { getSession } from '@/lib/auth'
 
@@ -50,5 +51,6 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     [id, type, title, description, status, priority]
   )
 
+  revalidatePath('/dashboard', 'layout')
   return NextResponse.json(result.rows[0])
 }

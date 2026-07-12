@@ -37,7 +37,7 @@ export const STATUS_LABELS: Record<ItemStatus, string> = {
   backlog: 'Backlog',
   planned: 'Planlagt',
   in_progress: 'I gang',
-  done: 'Færdig',
+  done: 'Fuldført',
 }
 
 export const TYPE_LABELS: Record<ItemType, string> = {

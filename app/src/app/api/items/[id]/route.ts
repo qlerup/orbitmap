@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import pool from '@/lib/db'
 import { getSession } from '@/lib/auth'
 
@@ -38,6 +39,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   )
   if (!result.rowCount) return NextResponse.json({ error: 'Punkt ikke fundet' }, { status: 404 })
 
+  revalidatePath('/dashboard', 'layout')
   return NextResponse.json(result.rows[0])
 }
 
@@ -49,5 +51,6 @@ export async function DELETE(req: NextRequest, { params }: { params: Promise<{ i
   const result = await pool.query('DELETE FROM roadmap_items WHERE id = $1', [id])
   if (!result.rowCount) return NextResponse.json({ error: 'Punkt ikke fundet' }, { status: 404 })
 
+  revalidatePath('/dashboard', 'layout')
   return NextResponse.json({ success: true })
 }

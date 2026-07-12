@@ -35,7 +35,7 @@ interface Stage {
   titleClass: string
 }
 
-// Flowet læses oppefra og ned: idéer kommer ind i Senere og bevæger sig ned mod Leveret
+// Flowet læses oppefra og ned: idéer kommer ind i Senere og bevæger sig ned mod Fuldført
 const STAGES: Stage[] = [
   {
     status: 'backlog',
@@ -60,7 +60,7 @@ const STAGES: Stage[] = [
   },
   {
     status: 'done',
-    title: 'Leveret',
+    title: 'Fuldført',
     subtitle: 'Færdig',
     nodeClass: 'bg-emerald-400/20 border-emerald-400/60 text-emerald-300 shadow-[0_0_16px_-2px_rgba(52,211,153,0.5)]',
     titleClass: 'text-emerald-300',
@@ -68,7 +68,7 @@ const STAGES: Stage[] = [
 ]
 
 const STAGE_FLOW: ItemStatus[] = ['backlog', 'planned', 'in_progress', 'done']
-const STAGE_TITLES: Record<ItemStatus, string> = { backlog: 'Senere', planned: 'Næste', in_progress: 'Nu', done: 'Leveret' }
+const STAGE_TITLES: Record<ItemStatus, string> = { backlog: 'Senere', planned: 'Næste', in_progress: 'Nu', done: 'Fuldført' }
 
 function nextStatus(status: ItemStatus): ItemStatus | null {
   const idx = STAGE_FLOW.indexOf(status)
@@ -342,7 +342,7 @@ export default function RoadmapView({ apps, items, setItems, onItemCreated, onIt
         PRIORITY_WEIGHT[a.priority] - PRIORITY_WEIGHT[b.priority] || a.position - b.position
       )
     }
-    // Leveret: nyeste først
+    // Fuldført: nyeste først
     byStatus.done.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
     return byStatus
   }, [items])
@@ -483,7 +483,7 @@ export default function RoadmapView({ apps, items, setItems, onItemCreated, onIt
         <ProgressRing percent={donePct} />
         <div className="flex-1 text-center sm:text-left">
           <p className="text-lg font-semibold text-white">
-            {doneCount} af {totalCount} punkter leveret
+            {doneCount} af {totalCount} punkter fuldført
           </p>
           <p className="text-sm text-slate-400 mt-0.5">
             {grouped.in_progress.length > 0
