@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import AddAppModal from './AddAppModal'
+import EditAppModal from './EditAppModal'
 import type { AppWithStats } from '@/lib/types'
 
 interface Props {
@@ -28,6 +29,7 @@ function chips(app: AppWithStats): Chip[] {
 export default function AppGrid({ initialApps }: Props) {
   const router = useRouter()
   const [showAddModal, setShowAddModal] = useState(false)
+  const [editApp, setEditApp] = useState<AppWithStats | null>(null)
 
   return (
     <>
@@ -40,13 +42,27 @@ export default function AppGrid({ initialApps }: Props) {
             <Link
               key={app.id}
               href={`/dashboard/apps/${app.id}`}
-              className="app-card glass p-5 fade-up block"
+              className="app-card glass p-5 fade-up block relative group"
               style={{
                 animationDelay: `${240 + i * 80}ms`,
                 ['--glow' as string]: app.color,
               }}
             >
-              <div className="flex items-center gap-4 mb-4">
+              <button
+                type="button"
+                onClick={e => {
+                  e.preventDefault()
+                  setEditApp(app)
+                }}
+                className="absolute top-3 right-3 p-1.5 rounded-lg text-slate-500 opacity-60 sm:opacity-0 sm:group-hover:opacity-100 focus-visible:opacity-100 hover:text-slate-200 hover:bg-white/10 transition-all duration-150"
+                aria-label={`Rediger ${app.name}`}
+                title="Rediger app"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </button>
+              <div className="flex items-center gap-4 mb-4 pr-7">
                 <span className="relative inline-flex items-center justify-center w-11 h-11 shrink-0">
                   <span className="planet-orbit" style={{ ['--c' as string]: app.color }} />
                   <span
@@ -118,6 +134,21 @@ export default function AppGrid({ initialApps }: Props) {
           onClose={() => setShowAddModal(false)}
           onCreated={() => {
             setShowAddModal(false)
+            router.refresh()
+          }}
+        />
+      )}
+
+      {editApp && (
+        <EditAppModal
+          app={editApp}
+          onClose={() => setEditApp(null)}
+          onSaved={() => {
+            setEditApp(null)
+            router.refresh()
+          }}
+          onDeleted={() => {
+            setEditApp(null)
             router.refresh()
           }}
         />
