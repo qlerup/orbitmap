@@ -8,6 +8,7 @@ export interface FjordHubUser {
   first_name?: string
   last_name?: string
   language?: string
+  must_change_password?: boolean
 }
 
 const MANAGED_PASSWORD_HASH = 'fjordhub-managed'
@@ -66,6 +67,23 @@ export async function authenticateWithFjordHub(
   const result = await hubRequest('/api/hub/apps/authenticate', { username, password })
   const user = result.user
   return result.ok === true && user && typeof user === 'object' ? user as FjordHubUser : null
+}
+
+export async function changeFjordHubPassword(
+  username: string,
+  currentPassword: string,
+  newPassword: string
+): Promise<{ user: FjordHubUser | null; error?: string }> {
+  const result = await hubRequest('/api/hub/apps/change-password', {
+    username,
+    current_password: currentPassword,
+    new_password: newPassword,
+  })
+  const user = result.user
+  if (result.ok === true && user && typeof user === 'object') {
+    return { user: user as FjordHubUser }
+  }
+  return { user: null, error: typeof result.error === 'string' ? result.error : undefined }
 }
 
 export async function verifyFjordHubSsoToken(token: string): Promise<FjordHubUser | null> {

@@ -10,6 +10,7 @@ const PUBLIC_PATHS = [
   '/api/setup',
   '/api/auth/login',
   '/api/auth/logout',
+  '/api/auth/change-password',
 ]
 
 export async function middleware(req: NextRequest) {
