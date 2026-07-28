@@ -20,7 +20,7 @@ interface Chip {
 function chips(app: AppWithStats): Chip[] {
   const list: Chip[] = []
   if (app.bug_count > 0) list.push({ key: 'bug', label: `${app.bug_count} fejl`, dot: 'bg-red-400' })
-  if (app.idea_count > 0) list.push({ key: 'idea', label: `${app.idea_count} ${app.idea_count === 1 ? 'idé' : 'idéer'}`, dot: 'bg-amber-400' })
+  if (app.idea_count > 0) list.push({ key: 'idea', label: `${app.idea_count} ${app.idea_count === 1 ? 'ændring' : 'ændringer'}`, dot: 'bg-amber-400' })
   if (app.feature_count > 0) list.push({ key: 'feature', label: `${app.feature_count} features`, dot: 'bg-sky-400' })
   if (app.in_progress_count > 0) list.push({ key: 'wip', label: `${app.in_progress_count} i gang`, dot: 'bg-violet-400' })
   return list

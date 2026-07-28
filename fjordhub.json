@@ -2,7 +2,7 @@
   "id": "orbitmap",
   "name": "OrbitMap",
   "tagline": "Roadmaps og projektplaner samlet ét sted",
-  "description": "Planlæg idéer, fejl og funktioner på tværs af apps med Kanban-tavler og en samlet roadmap-visning.",
+  "description": "Planlæg ændringer, fejl og funktioner på tværs af apps med Kanban-tavler og en samlet roadmap-visning.",
   "icon": "orbit",
   "accent": "#8b5cf6",
   "container_name": "orbitmap",

@@ -7,7 +7,7 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Orbitmap',
-  description: 'Roadmap, ideer og fejl for alle dine apps ét samlet sted',
+  description: 'Roadmap, ændringer og fejl for alle dine apps ét samlet sted',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

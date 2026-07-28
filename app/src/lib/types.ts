@@ -41,7 +41,7 @@ export const STATUS_LABELS: Record<ItemStatus, string> = {
 }
 
 export const TYPE_LABELS: Record<ItemType, string> = {
-  idea: 'Idé',
+  idea: 'Ændring',
   bug: 'Fejl',
   feature: 'Feature',
 }

@@ -35,12 +35,12 @@ interface Stage {
   titleClass: string
 }
 
-// Flowet læses oppefra og ned: idéer kommer ind i Senere og bevæger sig ned mod Fuldført
+// Flowet læses oppefra og ned: ændringer kommer ind i Senere og bevæger sig ned mod Fuldført
 const STAGES: Stage[] = [
   {
     status: 'backlog',
     title: 'Senere',
-    subtitle: 'Backlog & idébank',
+    subtitle: 'Backlog & ændringer',
     nodeClass: 'bg-slate-400/15 border-slate-400/50 text-slate-300',
     titleClass: 'text-slate-300',
   },
@@ -508,7 +508,7 @@ export default function RoadmapView({ apps, items, setItems, onItemCreated, onIt
             )}
             {openIdeas > 0 && (
               <span className="inline-flex items-center gap-1.5 text-[11px] font-medium text-amber-300 bg-amber-400/10 border border-amber-400/20 rounded-full px-2.5 py-1">
-                {TYPE_STYLE.idea.icon} {openIdeas} {openIdeas === 1 ? 'idé' : 'idéer'}
+                {TYPE_STYLE.idea.icon} {openIdeas} {openIdeas === 1 ? 'ændring' : 'ændringer'}
               </span>
             )}
           </div>
@@ -559,7 +559,7 @@ export default function RoadmapView({ apps, items, setItems, onItemCreated, onIt
             type="text"
             value={quickTitle}
             onChange={e => setQuickTitle(e.target.value)}
-            placeholder="Fik du en idé? Fandt du en fejl? Skriv den her…"
+            placeholder="Har du en ændring? Fandt du en fejl? Skriv den her…"
             maxLength={255}
             disabled={adding}
             className="input-field flex-1 !py-2.5 sm:!py-2"
