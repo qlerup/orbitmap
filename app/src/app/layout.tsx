@@ -7,6 +7,11 @@ const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 
 export const metadata: Metadata = {
   title: 'Orbitmap',
+  icons: {
+    icon: '/favicon.ico?v=brand-20261005',
+    apple: '/apple-touch-icon.png?v=brand-20261005',
+  },
+  manifest: '/site.webmanifest?v=brand-20261005',
   description: 'Roadmap, ændringer og fejl for alle dine apps ét samlet sted',
 }
 

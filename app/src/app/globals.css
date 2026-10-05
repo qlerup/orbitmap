@@ -173,36 +173,6 @@ body {
   animation: aurora-drift-a 40s ease-in-out infinite alternate-reverse;
 }
 
-/* ---------- Orbit-logo ---------- */
-
-.orbit-ring {
-  position: absolute;
-  inset: 0;
-  border-radius: 9999px;
-  border: 1px solid rgba(165, 180, 252, 0.35);
-}
-.orbit-spinner {
-  position: absolute;
-  inset: 0;
-  animation: orbit-spin 5s linear infinite;
-}
-.orbit-satellite {
-  position: absolute;
-  top: -2.5px;
-  left: 50%;
-  width: 5px;
-  height: 5px;
-  margin-left: -2.5px;
-  border-radius: 9999px;
-  background: #c7d2fe;
-  box-shadow: 0 0 8px 1px rgba(165, 180, 252, 0.9);
-}
-.orbit-core {
-  border-radius: 9999px;
-  background: radial-gradient(circle at 32% 30%, #a5b4fc, #6366f1 55%, #4338ca);
-  box-shadow: 0 0 14px rgba(129, 140, 248, 0.8);
-}
-
 /* ---------- Animationer ---------- */
 
 .fade-up {
@@ -444,18 +414,12 @@ body {
   to { transform: translate3d(6vw, -5vh, 0) scale(1.1); }
 }
 
-@keyframes orbit-spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 /* Respekter brugerens ønske om mindre bevægelse */
 @media (prefers-reduced-motion: reduce) {
   .stars,
   .stars::before,
   .stars::after,
   .aurora,
-  .orbit-spinner,
   .timeline-track::after,
   .stage-node-now::before,
   .prio-chip-high,
