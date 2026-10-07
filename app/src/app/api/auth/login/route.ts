@@ -5,6 +5,34 @@ import { authenticateWithFjordHub, ensureManagedLocalUser, isFjordHubManaged } f
 
 const MAX_ATTEMPTS = 5
 const LOCK_MINUTES = 5
+const MANAGED_WINDOW_MS = LOCK_MINUTES * 60 * 1000
+const managedLoginFailures = new Map<string, number[]>()
+
+function managedLoginKey(value: string): string {
+  return value.trim().toLocaleLowerCase('en-US')
+}
+
+function managedLoginLocked(key: string): boolean {
+  const now = Date.now()
+  const recent = (managedLoginFailures.get(key) || []).filter(stamp => now - stamp < MANAGED_WINDOW_MS)
+  if (recent.length) managedLoginFailures.set(key, recent)
+  else managedLoginFailures.delete(key)
+  return recent.length >= MAX_ATTEMPTS
+}
+
+function recordManagedLoginFailure(key: string): void {
+  const now = Date.now()
+  const recent = (managedLoginFailures.get(key) || []).filter(stamp => now - stamp < MANAGED_WINDOW_MS)
+  if (!managedLoginFailures.has(key) && managedLoginFailures.size >= 4096) {
+    const oldest = managedLoginFailures.keys().next().value
+    if (oldest) managedLoginFailures.delete(oldest)
+  }
+  managedLoginFailures.set(key, [...recent, now])
+}
+
+function clearManagedLoginFailures(key: string): void {
+  managedLoginFailures.delete(key)
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,13 +45,22 @@ export async function POST(req: NextRequest) {
     }
 
     if (isFjordHubManaged()) {
+      const managedKey = managedLoginKey(username)
+      if (managedLoginLocked(managedKey)) {
+        return NextResponse.json(
+          { error: `For mange fejlforsøg. Kontoen er låst i ${LOCK_MINUTES} minutter.` },
+          { status: 429 }
+        )
+      }
       const hubUser = await authenticateWithFjordHub(username, password)
       if (!hubUser) {
+        recordManagedLoginFailure(managedKey)
         return NextResponse.json(
           { error: 'Forkert login eller ingen adgang til OrbitMap i FjordHub' },
           { status: 401 }
         )
       }
+      clearManagedLoginFailures(managedKey)
       if (hubUser.must_change_password) {
         // Første login efter oprettelse: brugeren skal selv vælge en ny adgangskode
         return NextResponse.json(
