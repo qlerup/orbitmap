@@ -4,7 +4,7 @@ import { verifyPassword, runDummyVerify, createToken, COOKIE_NAME } from '@/lib/
 import { authenticateWithFjordHub, ensureManagedLocalUser, isFjordHubManaged } from '@/lib/fjordhub'
 
 const MAX_ATTEMPTS = 5
-const LOCK_MINUTES = 15
+const LOCK_MINUTES = 5
 
 export async function POST(req: NextRequest) {
   try {
