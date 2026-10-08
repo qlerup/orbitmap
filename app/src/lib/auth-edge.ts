@@ -4,6 +4,7 @@ export const COOKIE_NAME = 'om_session'
 const ALGORITHM = 'HS512'
 
 export interface SessionPayload {
+  hubUserId?: number
   userId: string
   username: string
 }

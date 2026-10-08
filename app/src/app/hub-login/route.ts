@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const user = await ensureManagedLocalUser(hubUser)
-    const sessionToken = await createToken({ userId: user.id, username: user.username })
+    const sessionToken = await createToken({ hubUserId: hubUser.id, userId: user.id, username: user.username })
     const response = NextResponse.redirect(redirectUrl(req, '/dashboard'))
     response.cookies.set(COOKIE_NAME, sessionToken, {
       httpOnly: true,

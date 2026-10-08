@@ -1,7 +1,8 @@
+import {hubAccess, hubManaged} from '@/lib/hub-access'
 import { NextRequest, NextResponse } from 'next/server'
 import { COOKIE_NAME, verifyToken } from '@/lib/auth-edge'
 
-const PUBLIC_PATHS = [
+const PUBLIC_PATHS = ['/hub-session.js', '/hub-session.css', '/api/auth/access',
   '/',
   '/login',
   '/setup',
@@ -32,6 +33,18 @@ export async function middleware(req: NextRequest) {
     return response
   }
 
+  if (hubManaged() && session.hubUserId) {
+    const status = await hubAccess({id:session.hubUserId})
+    if (status === 'unavailable') return NextResponse.json({error_code:'hub_unavailable'}, {status:503})
+    if (status === 'revoked') {
+      const response = pathname.startsWith('/api/')
+        ? NextResponse.json({error_code:'access_revoked', authenticated:false}, {status:401})
+        : NextResponse.redirect(new URL('/login?access_removed=1', req.url))
+      response.cookies.delete(COOKIE_NAME)
+      response.headers.set('Cache-Control','no-store')
+      return response
+    }
+  }
   return NextResponse.next()
 }
 

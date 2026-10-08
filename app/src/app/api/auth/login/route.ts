@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         )
       }
       const user = await ensureManagedLocalUser(hubUser)
-      const token = await createToken({ userId: user.id, username: user.username })
+      const token = await createToken({ hubUserId: hubUser.id, userId: user.id, username: user.username })
       const response = NextResponse.json({ success: true, username: user.username })
       response.cookies.set(COOKIE_NAME, token, {
         httpOnly: true,

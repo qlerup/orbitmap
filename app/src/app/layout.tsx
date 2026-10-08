@@ -1,3 +1,4 @@
+import Script from 'next/script'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import SpaceBackdrop from '@/components/SpaceBackdrop'
@@ -20,6 +21,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="da">
       <body className={`${inter.variable} font-sans antialiased`}>
         <SpaceBackdrop />
+        <link rel="stylesheet" href="/hub-session.css?v=1" />
+        <Script src="/hub-session.js?v=1" strategy="afterInteractive" />
         {children}
       </body>
     </html>
