@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
           { status: 429 }
         )
       }
-      const hubUser = await authenticateWithFjordHub(username, password)
+      const hubUser = await authenticateWithFjordHub(username, password, typeof body.firstLoginEmail === "string" ? body.firstLoginEmail : "")
       if (!hubUser) {
         recordManagedLoginFailure(managedKey)
         return NextResponse.json(
@@ -61,6 +61,9 @@ export async function POST(req: NextRequest) {
         )
       }
       clearManagedLoginFailures(managedKey)
+      if (hubUser.email_required) {
+        return NextResponse.json({ emailRequired: true, error: hubUser.email_error || 'Indtast din email ved første login.' }, { status: 403 })
+      }
       if (hubUser.must_change_password) {
         // Første login efter oprettelse: brugeren skal selv vælge en ny adgangskode
         return NextResponse.json(

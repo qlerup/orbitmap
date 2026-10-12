@@ -8,6 +8,8 @@ export default function LoginForm() {
   const searchParams = useSearchParams()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [emailRequired, setEmailRequired] = useState(false)
+  const [firstLoginEmail, setFirstLoginEmail] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -29,9 +31,14 @@ export default function LoginForm() {
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, firstLoginEmail }),
       })
       const data = await res.json()
+      if (data.emailRequired) {
+        setEmailRequired(true)
+        setError(data.error)
+        return
+      }
       if (data.passwordChangeRequired) {
         setMustChangePassword(true)
         return
@@ -152,6 +159,9 @@ export default function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      {emailRequired && <label className="block">Email til din FjordHub-konto
+        <input type="email" required autoFocus autoComplete="email" className="input-field" value={firstLoginEmail} onChange={e => setFirstLoginEmail(e.target.value)} />
+      </label>}
       {setupDone && !error && (
         <div className="alert-success">
           Kontoen er oprettet – log ind nedenfor
