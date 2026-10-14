@@ -8,10 +8,12 @@ The interface is currently in Danish.
 
 - Organize roadmap items by application
 - Kanban workflow with backlog, planned, in-progress, and done states
-- Idea, bug, and feature item types
+- Change, bug, and feature item types (the Change type retains the internal `idea` identifier for compatibility)
 - Low, medium, and high priorities
 - Drag-and-drop ordering
 - Global roadmap across all applications
+- Create, edit and delete tracked applications directly from the dashboard
+- Refresh completed-item counts and roadmap progress after changes
 - Single-user authentication with Argon2 password hashing
 - Login rate limiting and temporary account lockout
 - PostgreSQL persistence
@@ -126,6 +128,12 @@ When managed by FjordHub:
 - opening OrbitMap from FjordHub signs the user in with a short-lived SSO token;
 - direct login uses the same FjordHub username and password;
 - OrbitMap's standalone first-user setup is disabled.
+
+First-login email confirmation and replacement of temporary passwords can be completed in the OrbitMap login flow. Five-attempt limits and a five-minute lockout protect login. Existing sessions recheck current app membership; removed access invalidates them, while Hub outages block protected operations rather than authorizing stale access.
+
+Administrators can require a fresh email update in Hub. Opening or returning to OrbitMap presents a mandatory form for existing logins. Saving a valid, unique address clears the requirement across updated apps. Update Hub and OrbitMap together. Session identity remains intact when only email completion is required.
+
+The database schema is reconciled at startup, allowing existing deployments to receive required schema additions without rerunning first-user setup.
 
 Standalone installations continue to use OrbitMap's built-in account setup and authentication.
 
