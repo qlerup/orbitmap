@@ -23,7 +23,7 @@ export function isFjordHubManaged(): boolean {
   )
 }
 
-async function hubRequest(
+export async function hubRequest(
   path: string,
   payload: Record<string, unknown>,
   method: 'GET' | 'POST' = 'POST'
